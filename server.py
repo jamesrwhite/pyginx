@@ -22,7 +22,7 @@ except socket.error, (value, message):
 
 # Function that handles accepting and returning
 # data from clients
-def handleClientsConnections():
+def handleClientConnections():
 	# Get the client object and address
 	client, address = sock.accept()
 	stream = client.makefile(mode = 'rw')
@@ -85,4 +85,4 @@ def handleClientsConnections():
 
 # Off we go!
 while 1:
-	handleClientsConnections()
+	handleClientConnections()
