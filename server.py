@@ -7,7 +7,7 @@ import socket, sys
 try:
 	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 	sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-	sock.bind(('localhost', 65000))
+	sock.bind(('', 7878))
 	sock.listen(1)
 
 except socket.error, (value, message):
@@ -55,4 +55,4 @@ def handleClientsConnections():
 
 # Off we go!
 while 1:
-	handleClientsConnections
+	handleClientsConnections()
