@@ -1,5 +1,8 @@
 #
-# Task 6 - Web Server
+# A simple python web server
+#
+# Author: James White
+# Date: 12/2/12
 #
 import socket, sys
 
@@ -33,6 +36,7 @@ def handleClientsConnections():
 	method = command[0]
 	path = command[1]
 
+	# Only accept GET requests
 	if method != 'GET':
 		stream.write('HTTP/1.0 405 Unsupported\n\nUnsupported Method')
 		stream.write('Allow: GET\n')
