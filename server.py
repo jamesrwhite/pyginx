@@ -10,7 +10,7 @@ import socket, sys, threading
 try:
 	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 	sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-	sock.bind(('', 1337))
+	sock.bind(('', 1343))
 	sock.listen(5)
 
 except socket.error, (value, message):
@@ -43,7 +43,14 @@ def handleClientsConnections():
 
 	else:
 		try:
+			# Strip the / from the path
 			path = path[1:]
+
+			# If there is no path try and load index.html
+			if len(path) == 0:
+				path = 'index.html'
+			
+			# Try to open the file specified by the path
 			request_file = open(path, mode = 'r')
 
 			# Send the response HTTP headers
@@ -56,6 +63,7 @@ def handleClientsConnections():
 			stream.write('<pre><li>Request Method: ' + method + '</li>')
 			stream.write('<li>Path: ' + path + '</li></pre>')
 
+			# Print out all lines in the file
 			for line in request_file:
 				stream.write(line)
 
