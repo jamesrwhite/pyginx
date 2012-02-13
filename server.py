@@ -10,7 +10,7 @@ import socket, sys, threading
 try:
 	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 	sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-	sock.bind(('', 1343))
+	sock.bind(('', 1359))
 	sock.listen(5)
 
 except socket.error, (value, message):
@@ -25,7 +25,7 @@ except socket.error, (value, message):
 def handleClientConnections():
 	# Get the client object and address
 	client, address = sock.accept()
-	stream = client.makefile(mode = 'rw')
+	stream = client.makefile(mode = 'rw', bufsize = 1)
 
 	# Store the HTTP headers sent by the client in a list
 	headers = client.recv(4096)
@@ -38,8 +38,15 @@ def handleClientConnections():
 
 	# Only accept GET requests
 	if method != 'GET':
-		stream.write('HTTP/1.0 405 Unsupported\n\nUnsupported Method')
+		stream.write('HTTP/1.0 405 Unsupported\n')
 		stream.write('Allow: GET\n')
+		stream.write('Content-type: text/html\n')
+
+		# Output the content
+		stream.write('\n')
+		stream.write('<pre><li>Request Method: ' + method + '</li>')
+		stream.write('<li>Path: ' + path + '</li></pre>')
+		stream.write('<h1>405 Unsupported</h1>')
 
 	else:
 		try:
