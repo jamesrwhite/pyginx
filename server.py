@@ -1,7 +1,8 @@
 #
-# A simple python web server
+# A simple python web server, demo accessible at http://82.8.231.184:1337
 #
 # Author: James White
+# URL: https://github.com/jamesrwhite/pyginx
 # Date: 19/2/12
 #
 import socket, sys, thread
@@ -66,37 +67,33 @@ def handleClientConnections(client, address):
 			request_file = open("www/" + path, mode = "r")
 
 			# Send the response HTTP headers
-			stream.write("HTTP/1.0 200 Success\n")
+			stream.write("HTTP/1.0 200 OK\n")
 			stream.write("Allow: GET\n")
+			stream.write("Server: pyginx 0.1\n")
 
 			# Add support for basic image
-			def check_if_image(path) :
-				image_types = {
+			def add_mime_type(path) :
+				file_types = {
+					"html" : "text/html",
 					"jpg" : "image/jpg",
 					"jpeg" : "image/jpg",
 					"png" : "image/png",
-					"gif" : "image/gif"
+					"gif" : "image/gif",
+					"pdf" : "application/pdf"
 				}
 
-				for image_type in image_types :
-					if path.find(image_type) != -1 :
-						return image_types[image_type]
-				
-				return False
+				# Add a file type if needed
+				for file_type in file_types :
+					if path.find(file_type) != -1 :
+						return file_types[file_type]
 			
-			# Equal to Image MIME Type or False
-			is_image = check_if_image(path)
+			# Add the MIME Type to the file
+			mime_type = str(add_mime_type(path))
+			stream.write("Content-type: " + mime_type + "\n")
+			stream.write("\n")
 
-			if is_image :
-				stream.write("Content-type: " + is_image + "\n")
-				stream.write("\n")
-			
-			else :
-				# Otherwise assume text/HTML Content
-				stream.write("Content-type: text/html\n")
-
+			if mime_type == "text/html" :
 				# Output the content
-				stream.write("\n")
 				stream.write("<pre><li>Request Method: " + method + "</li>")
 				stream.write("<li>Path: " + path + "</li></pre>")
 
@@ -115,10 +112,17 @@ def handleClientConnections(client, address):
 			stream.write("<pre><li>Request Method: " + method + "</li>")
 			stream.write("<li>Path: " + path + "</li></pre>")
 			stream.write("<h1>404 Not Found</h1>")
+	
+	# Print debug info
+	print "Client: " + str(address)
+	print "On Thread ID: " + str(thread_id)
+	print "Request Time: " + strftime("%a, %d %b %Y %H:%M:%S", gmtime())
+	print "Request File: " + path + "\n"
 
 	# Close the connection
 	stream.close()
 	client.close()
+	# thread.exit() Not sure whether to do this or not?
 
 # Off we go!
 while 1:
@@ -127,8 +131,3 @@ while 1:
 
 	# Start the thread
 	thread_id = thread.start_new_thread(handleClientConnections, (client, address))
-
-	# Print debug info
-	print "Client: " + str(address)
-	print "On Thread ID: " + str(thread_id)
-	print "Request Time: " + strftime("%a, %d %b %Y %H:%M:%S", gmtime()) + "\n"
