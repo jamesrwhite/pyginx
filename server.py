@@ -2,7 +2,7 @@
 # A simple python web server
 #
 # Author: James White
-# Date: 12/2/12
+# Date: 19/2/12
 #
 import socket, sys, thread
 from time import gmtime, strftime
@@ -34,6 +34,8 @@ def handleClientConnections(client, address):
 	# Get the HTTP Method and Path
 	command = headers[0].split(" ")
 	method = command[0]
+	# If for some reason we don't get sent a Path
+	# default it to /
 	try :
 		path = command[1]
 	except IndexError :
@@ -61,7 +63,7 @@ def handleClientConnections(client, address):
 				path = "index.html"
 			
 			# Try to open the file specified by the path
-			request_file = open(path, mode = "r")
+			request_file = open("www/" + path, mode = "r")
 
 			# Send the response HTTP headers
 			stream.write("HTTP/1.0 200 Success\n")
