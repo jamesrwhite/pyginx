@@ -35,12 +35,13 @@ def handleClientConnections(client, address):
 	# Get the HTTP Method and Path
 	command = headers[0].split(" ")
 	method = command[0]
+
 	# If for some reason we don't get sent a Path
-	# default it to /
+	# then exit out
 	try :
 		path = command[1]
 	except IndexError :
-		pass
+		return
 
 	# Only accept GET requests
 	if method != "GET":
