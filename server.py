@@ -40,7 +40,7 @@ def handleClientConnections(client, address):
 	try :
 		path = command[1]
 	except IndexError :
-		path = "/"
+		pass
 
 	# Only accept GET requests
 	if method != "GET":
