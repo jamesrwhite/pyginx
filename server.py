@@ -5,6 +5,7 @@
 # Date: 12/2/12
 #
 import socket, sys, thread
+from time import gmtime, strftime
 
 # Socket Setup
 try:
@@ -66,12 +67,30 @@ def handleClientConnections(client, address):
 			stream.write("HTTP/1.0 200 Success\n")
 			stream.write("Allow: GET\n")
 
-			# Check for images and if so output the correct headers
-			if (path.find(".png") != -1) :
-				stream.write("Content-Type: image/png")
+			# Add support for basic image
+			def check_if_image(path) :
+				image_types = {
+					"jpg" : "image/jpg",
+					"jpeg" : "image/jpg",
+					"png" : "image/png",
+					"gif" : "image/gif"
+				}
+
+				for image_type in image_types :
+					if path.find(image_type) != -1 :
+						return image_types[image_type]
+				
+				return False
+			
+			# Equal to Image MIME Type or False
+			is_image = check_if_image(path)
+
+			if is_image :
+				stream.write("Content-type: " + is_image + "\n")
+				stream.write("\n")
 			
 			else :
-				# Assume text/HTML Content
+				# Otherwise assume text/HTML Content
 				stream.write("Content-type: text/html\n")
 
 				# Output the content
@@ -108,5 +127,6 @@ while 1:
 	thread_id = thread.start_new_thread(handleClientConnections, (client, address))
 
 	# Print debug info
-	print address
-	print "On thread ID: " + str(thread_id)
+	print "Client: " + str(address)
+	print "On Thread ID: " + str(thread_id)
+	print "Request Time: " + strftime("%a, %d %b %Y %H:%M:%S", gmtime()) + "\n"
