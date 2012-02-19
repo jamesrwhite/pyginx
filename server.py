@@ -105,8 +105,8 @@ while 1:
 	client, address = sock.accept()
 
 	# Start the thread
-	thread.start_new_thread(handleClientConnections, (client, address))
+	thread_id = thread.start_new_thread(handleClientConnections, (client, address))
 
 	# Print debug info
 	print address
-	print "On thread ID: " + str(thread.get_ident())
+	print "On thread ID: " + str(thread_id)
