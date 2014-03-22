@@ -1,8 +1,8 @@
 pyginx
 ======
 
-The demo is down at the moment, it's super simple to set this up locally though.
+A very simple web server written in Python. Run it locally like so:
 
     python server.py
     
-Then head to [http://localhost:1337](http://localhost:1337)
+then head to [http://localhost:1337/test.html](http://localhost:1337/test.html) and sit back and admire.
